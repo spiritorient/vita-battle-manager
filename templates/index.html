@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Battle Manager</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Add custom styles for better mobile experience */
+        @media (max-width: 767.98px) {
+            .table-responsive {
+                overflow-x: auto;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>D&D Battle Manager</h1>
+        <form action="{{ url_for('add_character') }}" method="post" class="mb-4">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="name">Character Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="ac">AC:</label>
+                    <input type="number" class="form-control" id="ac" name="ac" required>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="initiative">Initiative:</label>
+                    <input type="number" class="form-control" id="initiative" name="initiative" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="weapon">Weapon:</label>
+                <input type="text" class="form-control" id="weapon" name="weapon">
+            </div>
+            <div class="form-group">
+                <label for="weapon_damage">Weapon Damage:</label>
+                <input type="text" class="form-control" id="weapon_damage" name="weapon_damage">
+            </div>
+            <div class="form-group">
+                <label for="hp">HP:</label>
+                <input type="number" class="form-control" id="hp" name="hp" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Character</button>
+        </form>
+
+        <h2 class="mt-4">Character List</h2>
+
+        <!-- Sorting Dropdown -->
+        <form class="mb-4" action="" method="get">
+            <div class="form-group">
+                <label for="sort">Sort By:</label>
+                <select class="form-control" id="sort" name="sort" onchange="this.form.submit()">
+                    <option value="name" {% if request.args.get('sort') != 'initiative' %}selected{% endif %}>Name</option>
+                    <option value="initiative" {% if request.args.get('sort') == 'initiative' %}selected{% endif %}>Initiative</option>
+                </select>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>AC</th>
+                        <th>Initiative</th>
+                        <th>Weapon</th>
+                        <th>Weapon Damage</th>
+                        <th>HP</th>
+                        <th>Update HP</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for character in characters %}
+                    <tr>
+                        <td>{{ character.name }}</td>
+                        <td>{{ character.ac }}</td>
+                        <td>{{ character.initiative }}</td>
+                        <td>{{ character.weapon }}</td>
+                        <td>{{ character.weapon_damage }}</td>
+                        <td>{{ character.hp }}</td>
+                        <td>
+                            <form action="{{ url_for('update_character', index=loop.index0) }}" method="post">
+                                <input type="number" class="form-control" name="hp" placeholder="New HP" required>
+                                <button type="submit" class="btn btn-warning mt-1">Update</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('delete_character', index=loop.index0) }}" method="post">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
