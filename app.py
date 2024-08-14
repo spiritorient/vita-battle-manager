@@ -37,7 +37,7 @@ def add_character():
         'weapon_damage': weapon_damage,
         'hp': hp
     })
-    return redirect(url_for('index'))
+    return redirect(url_for('index'))   
 
 @app.route('/update/<int:index>', methods=['POST'])
 def update_character(index):
